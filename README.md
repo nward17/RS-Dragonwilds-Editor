@@ -1,12 +1,15 @@
 # 🚨 Fellhollow items added & updated UI
 
-# Runescape:Dragonwilds Save Editor
+![Updated UI](https://i.imgur.com/UKKhZii.png)
+
+# Runescape: Dragonwilds Save Editor
 
 RSD-Save Editor is a simple python script that injects items into your save file (.json) so when you log back in they are in the slots you place them in. This is only currently setup for items right now, just a fast and easy way to inject them with custom GUIDs so there isn't any issue with disappearing items later.
 
 ## Authors
 
 - [@Elleandria](https://www.github.com/Elleandria)
+- [@nward17](https://www.github.com/nward17)
 
 ## Demo
 
