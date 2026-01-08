@@ -1,6 +1,6 @@
 # 🚨 Fellhollow items added & updated UI
 
-![Updated UI](https://i.imgur.com/UKKhZii.png)
+![Updated UI](https://i.imgur.com/LzWEmBm.png)
 
 # Runescape: Dragonwilds Save Editor
 
