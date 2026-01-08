@@ -44,6 +44,7 @@ UI_DIR = os.path.join(ASSETS_DIR, "UI")
 DATA_DIR = resource_path("data")
 SLOT_ICON_SIZE = 58
 ICON_MAP, POWER_MAP = {}, {}
+ITEM_NAME_MAP = {}
 POWER_BADGES = {}
 ICON_CACHE = {}
 ITEM_ICON_SIZE = 32
@@ -350,7 +351,7 @@ def _set_power_badge(parent_lbl: tk.Label, item_id: str | None) -> None:
         badge.place_forget()
 
 def load_item_list():
-    global ICON_MAP, POWER_MAP
+    global ICON_MAP, POWER_MAP, ITEM_NAME_MAP
     items, display_map, lookup, categorized_items = [], {}, {}, {}
     path = os.path.join(DATA_DIR, "ItemID.txt")
     if not os.path.exists(path):
@@ -376,24 +377,11 @@ def load_item_list():
     for entry in data:
         pid = entry.get("PersistenceID")
         icon = entry.get("IconFile")
+        name = entry.get("SourceString", "").strip()
         if pid and icon:
             ICON_MAP[pid] = icon
-            for size in (ITEM_ICON_SIZE, SELECTED_ICON_SIZE):
-                cache_key = (pid, size)
-                if cache_key not in ICON_CACHE:
-                    try:
-                        p = os.path.join(UI_DIR, icon)
-                        if not os.path.exists(p):
-                            print(f"Icon file missing: {p} for ItemID {pid}")
-                            continue
-                        img = Image.open(p).convert("RGBA").resize(
-                            (size, size),
-                            Image.LANCZOS
-                        )
-                        tk_img = ImageTk.PhotoImage(img)
-                        ICON_CACHE[cache_key] = tk_img
-                    except Exception as e:
-                        print(f"Failed to preload icon {icon} for ItemID {pid}: {e}")
+        if pid and name:
+            ITEM_NAME_MAP[pid] = name
 
     for entry in data:
         name = entry.get("SourceString", "").strip()
@@ -432,7 +420,6 @@ def get_icon_image(item_id: str) -> ImageTk.PhotoImage | None:
     try:
         p = os.path.join(UI_DIR, icon_name)
         if not os.path.exists(p):
-            print(f"Icon file missing: {p} for ItemID {item_id}")
             return None
         img = Image.open(p).convert("RGBA").resize(
             (SLOT_ICON_SIZE, SLOT_ICON_SIZE),
@@ -442,7 +429,7 @@ def get_icon_image(item_id: str) -> ImageTk.PhotoImage | None:
         ICON_CACHE[cache_key] = tk_img
         return tk_img
     except Exception as e:
-        print(f"Failed to load icon {icon_name} for ItemID {item_id}: {e}")
+        print(f"Failed to load icon {icon_name}: {e}")
         return None
 
 def get_box_icon_image(item_id: str, size: int = ITEM_ICON_SIZE) -> ImageTk.PhotoImage | None:
@@ -455,13 +442,11 @@ def get_box_icon_image(item_id: str, size: int = ITEM_ICON_SIZE) -> ImageTk.Phot
 
     icon_name = ICON_MAP.get(item_id)
     if not icon_name:
-        print(f"No icon found for ItemID {item_id}")
         return None
 
     try:
         p = os.path.join(UI_DIR, icon_name)
         if not os.path.exists(p):
-            print(f"Icon file missing: {p} for ItemID {item_id}")
             return None
         img = Image.open(p).convert("RGBA").resize(
             (size, size),
@@ -471,7 +456,7 @@ def get_box_icon_image(item_id: str, size: int = ITEM_ICON_SIZE) -> ImageTk.Phot
         ICON_CACHE[cache_key] = tk_img
         return tk_img
     except Exception as e:
-        print(f"Failed to load box icon {icon_name} for ItemID {item_id}: {e}")
+        print(f"Failed to load icon {icon_name}: {e}")
         return None
 
 def inject_items():
